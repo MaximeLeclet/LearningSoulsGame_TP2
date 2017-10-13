@@ -12,7 +12,7 @@ public class Dice {
     }
 
     public int roll() {
-        return random.nextInt(faces-1);
+        return random.nextInt(faces);
     }
 
 }

@@ -11,9 +11,12 @@ public class Character {
     private int stamina;
     private int maxStamina;
     private Dice dice;
+    private Weapon weapon;
 
     public Character() {
+
         dice = new Dice(101);
+
     }
 
     public Character(String name) {
@@ -61,11 +64,25 @@ public class Character {
         this.maxStamina = maxStamina;
     }
 
+    public Weapon getWeapon() {
+        return weapon;
+    }
+
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
+    }
+
     public boolean isAlive() {
         return(this.getLife()>0);
     }
 
-    public int attackWith(Weapon weapon) {
+    public int attack() {
+        return this.attackWith(weapon);
+    }
+
+    private int attackWith(Weapon weapon) {
+
+        weapon.use();
 
         if(weapon.isBroken() || this.getStamina() <= 0) {
             return 0;
@@ -74,11 +91,11 @@ public class Character {
 
             int precision = this.dice.roll();
 
-            int degats = (int) Math.round(weapon.getMinDamage() + ((precision/100.0) * (weapon.getMaxDamage() - weapon.getMinDamage())));
+            int degats = weapon.getMinDamage() + (weapon.getMaxDamage() - weapon.getMinDamage()) * precision/100;
 
             if(this.getStamina() < weapon.getStamCost()) {
 
-                float proportion = (this.getStamina()/weapon.getStamCost());
+                float proportion = ((float)this.getStamina()/(float)weapon.getStamCost());
 
                 degats = Math.round(degats * proportion);
 
@@ -86,12 +103,20 @@ public class Character {
 
             }
             else {
-                this.setStamina(this.getStamina()-weapon.getStamCost()); /////// MARCHE PAS????????
+                this.setStamina(this.getStamina()-weapon.getStamCost());
             }
 
             return degats;
 
         }
+
+    }
+
+    public int getHitWith(int value) {
+
+        int degats = (this.getLife()-value < 0) ? this.getLife() : value;
+        this.setLife(this.getLife()-degats);
+        return degats;
 
     }
 
