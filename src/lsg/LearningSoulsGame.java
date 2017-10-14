@@ -11,43 +11,68 @@ import java.util.Scanner;
 
 public class LearningSoulsGame {
 
-    public static void refresh(lsg.characters.Character character1, lsg.characters.Character character2) {
+    private lsg.characters.Character hero = new Hero();
 
-        character1.printStats();
-        character2.printStats();
+    private lsg.characters.Character monster = new Monster();
 
-    }
+    private Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
 
-        lsg.characters.Character hero = new Hero();
-        Weapon armeHero = new Sword();
-        hero.setWeapon(armeHero);
+        LearningSoulsGame learningSoulsGame = new LearningSoulsGame();
 
-        lsg.characters.Character monstre = new Monster();
-        Weapon armeMonstre = new Claw();
-        monstre.setWeapon(armeMonstre);
+        learningSoulsGame.play_v1();
 
-        Scanner scanner = new Scanner(System.in);
+    }
 
-        boolean tourHero = true;
-        int degats;
+    public void init() {
 
-        refresh(hero, monstre);
+        hero.setWeapon(new Sword());
+        monster.setWeapon(new Claw());
 
-        while(true) {
+    }
 
-            System.out.println("Appuyez sur 'entrée' pour le prochain tour > ");
+    public void fight1v1() {
+
+        int attack;
+        int damages;
+        lsg.characters.Character attacker = hero;
+        lsg.characters.Character attacked = monster;
+        lsg.characters.Character transfer;
+
+        while(hero.isAlive() && monster.isAlive()) {
+
+            refresh();
+
+            System.out.print("\nHit enter key for next move > ");
             scanner.nextLine();
 
-            if(tourHero) {
+            attack = attacker.attack();
+            damages = attacked.getHitWith(attack);
 
-                degats = hero.attack();
-                System.out.println(hero.getName() + " attaque " + monstre.getName() + " avec ");
+            System.out.println("\n" + attacker.getName() + " attacks " + attacked.getName() + " with " + attacker.getWeapon().getName() + " (ATTACK:" + attack + " | DMG : " + damages + ")");
 
-            }
+            transfer = attacked;
+            attacked = attacker;
+            attacker = transfer;
 
         }
+
+        System.out.println("\n--- " + attacked.getName() + " WINS !!! ---");
+
+    }
+
+    public void play_v1() {
+
+        init();
+        fight1v1();
+
+    }
+
+    public void refresh() {
+
+        hero.printStats();
+        monster.printStats();
 
     }
 
